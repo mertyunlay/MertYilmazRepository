@@ -1,0 +1,10 @@
+# Visual Studio geçici dosyalar
+.vs/
+*.vsdx
+bin/
+obj/
+
+# Diğer geçici dosyalar
+*.log
+*.bak
+*.tmp

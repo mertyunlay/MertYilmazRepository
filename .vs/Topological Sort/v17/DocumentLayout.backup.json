@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\mert\\Desktop\\c\u002B\u002B\\Topological Sort\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{33E19F4B-E17E-4764-849A-D965ED83F557}|Topological Sort\\Topological Sort.vcxproj|C:\\Users\\mert\\Desktop\\c\u002B\u002B\\Topological Sort\\Topological Sort\\Topological Sort.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{33E19F4B-E17E-4764-849A-D965ED83F557}|Topological Sort\\Topological Sort.vcxproj|solutionrelative:Topological Sort\\Topological Sort.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Topological Sort.cpp",
+              "DocumentMoniker": "C:\\Users\\mert\\Desktop\\c\u002B\u002B\\Topological Sort\\Topological Sort\\Topological Sort.cpp",
+              "RelativeDocumentMoniker": "Topological Sort\\Topological Sort.cpp",
+              "ToolTip": "C:\\Users\\mert\\Desktop\\c\u002B\u002B\\Topological Sort\\Topological Sort\\Topological Sort.cpp",
+              "RelativeToolTip": "Topological Sort\\Topological Sort.cpp",
+              "ViewState": "AgIAACoAAAAAAAAAAAAAADkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-05-11T14:47:50.357Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
