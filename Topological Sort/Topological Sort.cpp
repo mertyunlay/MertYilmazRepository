@@ -1,68 +1,136 @@
-﻿#include <iostream>            
-#include <vector>             
-#include <stack>                
-#include <unordered_map>        
-#include <set>                 
-#include <string>    
+﻿#include <iostream>
+#include <vector>
+#include <stack>
+#include <unordered_map>
+#include <set>
+#include <queue>
+#include <string>
+#include <sstream>
 
-using namespace std;      
+using namespace std;
 
-// DFS fonksiyonu: Derinlik öncelikli arama yaparak, topolojik sıralama için düğümleri yığına ekler
+// DFS (Derinlik Öncelikli Arama) ile Topolojik Sıralama için yardımcı fonksiyon
 void dfs(int node, unordered_map<int, vector<int>>& adj, unordered_map<int, bool>& visited, stack<int>& st) {
-    visited[node] = true;  // Şu anki düğümü ziyaret ettik olarak işaretle
+    visited[node] = true;
+
+    // Bu düğüme komşu olan tüm düğümleri dolaş
     for (int neighbor : adj[node]) {
-        // Eğer komşu düğüm daha önce ziyaret edilmemişse, rekürsif olarak DFS çağır
         if (!visited[neighbor]) {
             dfs(neighbor, adj, visited, st);
         }
     }
-    st.push(node);  // Tüm komşuları ziyaret ettikten sonra bu düğümü yığına ekle
+
+    // Tüm komşuları ziyaret ettikten sonra bu düğümü yığına ekle
+    st.push(node);
 }
 
-int main() {
-    unordered_map<int, vector<int>> adj;
-    set<int> nodes;                       
-    string input;                          
-    int edgeCount = 1;                     
+// BFS (Kahn’s Algorithm) ile Topolojik Sıralama
+void kahnTopologicalSort(unordered_map<int, vector<int>>& adj, set<int>& nodes) {
+    unordered_map<int, int> in_degree; // Her düğümün giriş derecesini tut
 
-    cout << "Topolojik siralama icin kenarlari girin (ornek: 2 3)\n";  
-    cout << "Girisi bitirmek icin 'bitir' yazin.\n";                   
-    while (true) {
-        cout << edgeCount << ". kenari girin: ";
-        cin >> input;
-        if (input == "bitir") break;
-
-        int u = stoi(input);  // Stringi integer tipine dönüştürür
-        int v;
-        cin >> v;
-
-        adj[u].push_back(v);  // u düğümünden v düğümüne bir yönlü kenar ekle
-        nodes.insert(u);  // u düğümünü düğümler kümesine ekle
-        nodes.insert(v);  // v düğümünü düğümler kümesine ekle
-        edgeCount++;
+    // Başlangıçta tüm düğümlerin giriş derecesi sıfır olarak ayarlanır
+    for (int node : nodes) {
+        in_degree[node] = 0;
     }
 
-    unordered_map<int, bool> visited;  // Hangi düğümlerin ziyaret edildiğini saklamak için bir map
-    // Tüm düğümleri ziyaret edilmemiş olarak işaretle
-    for (int node : nodes) {
-        visited[node] = false;
-    }
-
-    stack<int> st;
-    // Her düğüm üzerinde DFS çağrısı yap
-    for (int node : nodes) {
-        if (!visited[node]) {  // Eğer düğüm henüz ziyaret edilmediyse
-            dfs(node, adj, visited, st);  // DFS ile bu düğümü ve onun komşularını işle
+    // Giriş derecelerini hesapla
+    for (auto& pair : adj) {
+        for (int neighbor : pair.second) {
+            in_degree[neighbor]++;
         }
     }
 
-    // Yığındaki düğümleri çıkararak topolojik sıralamayı yazdır
-    cout << "Topolojik Siralama: ";
-    while (!st.empty()) {  // Yığın boşalana kadar
-        cout << st.top() << " ";  // Yığının tepe elemanını yazdır
-        st.pop();  // Tepe elemanı çıkar
+    queue<int> q;
+    // Giriş derecesi 0 olan düğümleri kuyruğa ekle
+    for (int node : nodes) {
+        if (in_degree[node] == 0) {
+            q.push(node);
+        }
+    }
+
+    vector<int> result; // Topolojik sıralama sonucu
+
+    while (!q.empty()) {
+        int current = q.front();
+        q.pop();
+        result.push_back(current);
+
+        // Bu düğümden çıkan tüm kenarları işleyerek komşuların giriş derecesini azalt
+        for (int neighbor : adj[current]) {
+            in_degree[neighbor]--;
+            if (in_degree[neighbor] == 0) {
+                q.push(neighbor);
+            }
+        }
+    }
+
+    // Eğer sıralanan düğüm sayısı, toplam düğüm sayısına eşit değilse, graf döngü içeriyordur
+    if (result.size() != nodes.size()) {
+        cout << "HATA: Graf dongu (cycle) iceriyor, topolojik siralama yapilamaz.\n";
+        return;
+    }
+
+    // Sıralamayı yazdır
+    cout << "Topolojik Siralama (BFS - Kahn): ";
+    for (int node : result) {
+        cout << node << " ";
     }
     cout << endl;
+}
+
+int main() {
+    unordered_map<int, vector<int>> adj; // Komşuluk listesi
+    set<int> nodes;                      // Tüm düğümleri saklayan küme
+    string line;
+    int edgeCount = 1;
+
+    // Kullanıcıdan kenar girişleri alınıyor
+    cout << "Topolojik siralama icin kenarlari girin (ornek: 2 3)\n";
+    cout << "Girisi bitirmek icin 'bitir' yazin.\n";
+
+    while (true) {
+        cout << edgeCount << ". kenari girin: ";
+        getline(cin, line);
+
+        if (line == "bitir") break;
+
+        stringstream ss(line);
+        int u, v;
+
+        if (!(ss >> u >> v)) {
+            cout << "Hatalı format. Ornek giris: 2 3\n";
+            continue;
+        }
+
+        // Kenarı ekle
+        adj[u].push_back(v);
+        nodes.insert(u);
+        nodes.insert(v);
+        edgeCount++;
+    }
+
+    // DFS ile Topolojik Sıralama
+    unordered_map<int, bool> visited;
+    for (int node : nodes)
+        visited[node] = false;
+
+    stack<int> st;
+
+    for (int node : nodes) {
+        if (!visited[node]) {
+            dfs(node, adj, visited, st);
+        }
+    }
+
+    cout << "Topolojik Siralama (DFS): ";
+    while (!st.empty()) {
+        cout << st.top() << " ";
+        st.pop();
+    }
+    cout << endl;
+
+    // Kahn (BFS) algoritmasını çalıştır
+    kahnTopologicalSort(adj, nodes);
 
     return 0;
 }
